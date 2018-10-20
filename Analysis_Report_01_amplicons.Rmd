@@ -1,6 +1,6 @@
 ---
 title: "Analysis Report 1: Your Title Here"
-author: "Don Francisco"
+author: "Maggie Chen"
 date: "October 20, 2017"
 output: github_document
 bibliography: references.bib
@@ -81,7 +81,7 @@ filenames_forward_reads <- file.path(path, filenames_forward_reads)
 
 ```{r check-quality-plots}
 # Plots the quality profiles of all twenty samples
-plotQualityProfile(filenames_forward_reads[1:20])
+plotQualityProfile(filenames_forward_reads[1:115])
 ```
 
 We can see from the quality profiles that most reads tend to get pretty bad in quality after around 200 bases. 
@@ -106,7 +106,7 @@ filtered_output <- filterAndTrim(fwd = filenames_forward_reads,
                                  truncQ = 2, # cut off if quality gets this low
                                  rm.phix = TRUE,
                                  compress = TRUE,
-                                 multithread = FALSE)
+                                 multithread = TRUE)
 ```
 
 ```{r filtered-read-counts-table}
@@ -120,7 +120,7 @@ kable(filtered_output,
 ```{r learn-errors}
 # this build error models from each of the samples
 errors_forward_reads <- learnErrors(filtered_reads_path,
-                                    multithread = FALSE)
+                                    multithread = TRUE)
 ```
 
 ```{r visualize-errors-with-plots}
@@ -207,7 +207,7 @@ kable(track)
 # made up of known sequences
 taxa <- assignTaxonomy(sequence_table_nochim,
                        "data/training/rdp_train_set_16.fa.gz",
-                       multithread = FALSE,
+                       multithread = TRUE,
                        tryRC = TRUE) # also check with seq reverse compliments
 
 # show the results of the taxonomy assignment
@@ -283,12 +283,40 @@ plot_richness(phyloseq_obj,
 ```{r example-phyloseq-plot-2}
 # phylogeny, yay!
 plot_tree(phyloseq_obj,
-          color = "Sex",
+          color = "Order",
           ladderize = TRUE) # this arranges the tree branches from short to long
 ```
 
 **Figure 2**: Inferred phylogeny of sequences, with points on tips representing samples within which each particular taxa occurred. Tree represents phylogeny inferred using FastTree.
 
+```{r}
+# what are the most commonly found taxa
+plot_tree(phyloseq_obj,
+          color = "sample_type",
+          ladderize = TRUE)
+```
+
+```{r}
+plot_bar(phyloseq_obj, x="sample_type", fill ="Phylum")
+```
+
+
+```{r}
+plot_bar(phyloseq_obj, "Phylum", fill="Phylum", facet_grid=~host_subject_id)
+```
+```{r}
+melted_obj <- psmelt(phyloseq_obj)
+```
+
+```{r}
+melted_obj %>%
+  filter(Phylum == "Actinobacteria") %>%
+  ggplot(aes(x = host_subject_id,
+             y = Abundance,
+             fill = sample_source,
+             color = sample_source)) +
+  geom_col(position = position_dodge())
+```
 
 # Discussion
 
