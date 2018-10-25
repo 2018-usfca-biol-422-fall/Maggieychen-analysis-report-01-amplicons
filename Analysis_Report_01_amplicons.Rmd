@@ -307,12 +307,13 @@ melted_obj <- psmelt(phyloseq_obj)
 # Filter the most commonly found species, Actinobacteria
 # and examine the sample source of where Actinobacteria was found
 melted_obj %>%
-  filter(Phylum == "Actinobacteria") %>%
+  filter(Phylum %in% c ("Actinobacteria", "Firmicutes")) %>%
   ggplot(aes(x = host_subject_id,
              y = Abundance,
              fill = sample_source,
              color = sample_source)) +
-  geom_col(position = position_dodge())
+  geom_col(position = position_dodge()) +
+  facet_grid(Phylum ~.)
 ```
 
 
@@ -322,10 +323,12 @@ melted_obj %>%
 # To examine for male indivudals how phylums
 # Matches up in between skin ans surface samples
 melted_obj %>%
-  filter(Sex == "male") %>%
-  ggplot(aes(x = Phylum,
+  filter(host_subject_id %in% c("M2","M3","M9")) %>%
+  filter(Phylum %in% c ("Actinobacteria")) %>%
+  ggplot(aes(x = Genus,
              y = Abundance,
-             fill = sample_type)) +
+             color = sample_source,
+             fill = sample_source)) +
     geom_col(position = position_dodge()) +
   facet_grid(host_subject_id ~.) +
   theme(axis.text.x = element_text(angle = 90,
@@ -338,7 +341,7 @@ melted_obj %>%
 # use space_bar which is the most common sampe sourece
 # to identify the association between phylum and sex
 melted_obj %>%
-  filter(sample_source == "Space_bar") %>%
+filter(sample_source == "Space_bar") %>%
   ggplot(aes(x = Phylum,
              y =  Abundance, 
              fill = host_subject_id,
