@@ -325,7 +325,7 @@ melted_obj %>%
 melted_obj %>%
   filter(host_subject_id %in% c("M2","M3","M9")) %>%
   filter(Phylum %in% c ("Actinobacteria")) %>%
-  ggplot(aes(x = Genus,
+  ggplot(aes(x = Family,
              y = Abundance,
              color = sample_source,
              fill = sample_source)) +
@@ -341,17 +341,16 @@ melted_obj %>%
 # use space_bar which is the most common sampe sourece
 # to identify the association between phylum and sex
 melted_obj %>%
-filter(sample_source == "Space_bar") %>%
-  ggplot(aes(x = Phylum,
-             y =  Abundance, 
-             fill = host_subject_id,
-             color = host_subject_id,
-             shape = Sex)) +
-  geom_point(position = position_dodge()) +
+  filter(host_subject_id %in% c("M2","M3","M9")) %>%
+  filter(Family == "Propionibacteriaceae") %>%
+  ggplot(aes(x = Genus,
+             y = Abundance,
+             color = sample_source,
+             fill = sample_source)) +
+    geom_col(position = position_dodge()) +
+    facet_grid(host_subject_id ~.) +
   theme(axis.text.x = element_text(angle = 90,
                                     hjust = 1))
-
-
 ```
 
 
