@@ -300,14 +300,14 @@ melted_obj <- psmelt(phyloseq_obj)
   geom_col(position = position_dodge()) +
   facet_grid(sample_type ~.)
 ```
+**Figure1**: What are the Phylum identified from each individuals samples. Including bother skin as the fingertip and surface as the keyboard. As the Figure presented, for the keyboard samples for all the individuals, the most commonly found Phylum across all the indivudals is Actinobacteria, present in organge color. The second commnoly found bacteria Phylum is Firmicutes. This finding is consistant with fingertip samples, however, there are individuals does not has fingertip sample. Including F1 who is a female individual; for L1, L3, R1, U1, U2, U3 the sex of the individual is not applictable.
 
 
-
-```{r, Actinobacteria_key_identification}
-# Filter the most commonly found species, Actinobacteria
-# and examine the sample source of where Actinobacteria was found
+```{r, Actinobacteria_key_identification-barplot}
+# Filter the most commonly found species, Actinobacteria and Firmicutes 
+# and examine the sample source of where Actinobacteria and Firmicutes was found
 melted_obj %>%
-  filter(Phylum %in% c ("Actinobacteria", "Firmicutes")) %>%
+  filter(Phylum %in% c("Actinobacteria", "Firmicutes")) %>%
   ggplot(aes(x = host_subject_id,
              y = Abundance,
              fill = sample_source,
@@ -315,13 +315,14 @@ melted_obj %>%
   geom_col(position = position_dodge()) +
   facet_grid(Phylum ~.)
 ```
+**Figure2**: For the most two commly found bacteria phylum across all the individual samples: Actinobacteria, Firmicutes. What how frequently these two bacteria are found on each keys and fingertip is illustrated. As an result, only male individuals M2, M3, M9 has all keys sampled. For other individuals, only space bar is sampled. 
 
 
 
-
-```{r, male-sample_type_Phylum}
-# To examine for male indivudals how phylums
-# Matches up in between skin ans surface samples
+```{r, male-sample_type_Family-barplot}
+# To examine for male indivudals phylums of Actinobacteria
+# then look for the Family distribution on each keys
+# for each of the male samples
 melted_obj %>%
   filter(host_subject_id %in% c("M2","M3","M9")) %>%
   filter(Phylum %in% c ("Actinobacteria")) %>%
@@ -337,9 +338,10 @@ melted_obj %>%
 
 
 
-```{r, space_bar-phylum-sex}
-# use space_bar which is the most common sampe sourece
-# to identify the association between phylum and sex
+```{r, Genus-in-Propionibacteriaceae_Family-barplot}
+# Filter the Family Propionibacteriaceae, which is most common
+# Further look for Genus distribution in 3 male samples
+# on each of the keys examed
 melted_obj %>%
   filter(host_subject_id %in% c("M2","M3","M9")) %>%
   filter(Family == "Propionibacteriaceae") %>%
@@ -350,16 +352,51 @@ melted_obj %>%
     geom_col(position = position_dodge()) +
     facet_grid(host_subject_id ~.) +
   theme(axis.text.x = element_text(angle = 90,
-                                    hjust = 1))
+                                    hjust = 1)) +
+  ggtitle("Genus abundance in Propionibacteriaceae family on M2, M3, M9")
+```
+**Figure4**: Genus abundance in Propionibacteriaceae family on M2, M3, M9. For all three male individuals M2, M3, M9, the most common Genus identified on both their keyboards and fingertip is Propionibacterium. For individual M3 and M9, the most adundance on found on Fingertip. For each of the individual, there is a different distrubution of amount of Genus Propionibacterium found on each of the keys.
+
+```{r, subset-Genus}
+# use subset data to generate a selected dataset
+# for the alpha diversity check
+# create a subset for only Genus Propionibacterium
+subset1_Genus <- subset_taxa(phyloseq_obj, Genus == "Propionibacterium")
+
 ```
 
+```{r, subset-Male}
+# use subset data to generate a selected dataset
+# for the alpha diversity check
+# make another subset that only contains information 
+# of Genus Propionibacterium for M2,3,9
+subset2_male <- subset_samples(subset1_Genus, host_subject_id %in% c("M2","M3","M9"))
+```
 
+```{r, jitterplot-sample-diversity}
+# Use created subset data to plot for the 
+# alpha diversity metirc on different keys
+plot_richness(subset2_male,
+              x = "sample_type",
+              measures = c("Shannon"),
+              color = "sample_source") +
+  xlab("Sample origin") +
+  geom_jitter(width = 0.2) +
+  facet_grid(host_subject_id ~.) +
+  theme_bw() +
+  ggtitle("Alpha diversity of Genus Propionibacterium on M2, M3, M9 samples")
+
+```
+
+**Figure5**: The male sample alpha diversity of sequences identified in Genus Propionibacterium. This figure presents the alpha diveristy on sample from M2, M3, and M9, which are all male individuals. The alpha diverity id measured for the sequences identified as Genus Propionibacterium. The samples are from both fingertip and the keyboard of the individual. The M2 has a higher diversity in this geneus. And the fingertip in M2 has higher diversity than its keyboard. For M3 and M9, they have lower diveristy in the samples compare to M2. Also, for both M3 and M9, the fingertip and keyboards has a very simmliar diversities. 
 
 
 
 
 
 # Discussion
+
+The higer alpha diversity in the M2 in dicate the possibleity of have different strains or different species that is hard for sequence to detect
 
 Add around 2-3 pages interpreting your results and considering future directions one might take in analyzing these data.
 
