@@ -106,7 +106,7 @@ filtered_output <- filterAndTrim(fwd = filenames_forward_reads,
                                  truncQ = 2, # cut off if quality gets this low
                                  rm.phix = TRUE,
                                  compress = TRUE,
-                                 multithread = TRUE)
+                                 multithread = FALSE)
 ```
 
 ```{r filtered-read-counts-table}
@@ -120,7 +120,7 @@ kable(filtered_output,
 ```{r learn-errors}
 # this build error models from each of the samples
 errors_forward_reads <- learnErrors(filtered_reads_path,
-                                    multithread = TRUE)
+                                    multithread = FALSE)
 ```
 
 ```{r visualize-errors-with-plots}
@@ -207,7 +207,7 @@ kable(track)
 # made up of known sequences
 taxa <- assignTaxonomy(sequence_table_nochim,
                        "data/training/rdp_train_set_16.fa.gz",
-                       multithread = TRUE,
+                       multithread = FALSE,
                        tryRC = TRUE) # also check with seq reverse compliments
 
 # show the results of the taxonomy assignment
