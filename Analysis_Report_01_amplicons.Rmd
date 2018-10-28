@@ -304,7 +304,7 @@ melted_obj <- psmelt(phyloseq_obj)
 
 
 ```{r, Actinobacteria_key_identification-barplot}
-# Filter the most commonly found species, Actinobacteria and Firmicutes 
+# Filter the most commonly found species, Actinobacteria and Firmicutes
 # and examine the sample source of where Actinobacteria and Firmicutes was found
 melted_obj %>%
   filter(Phylum %in% c("Actinobacteria", "Firmicutes")) %>%
@@ -324,8 +324,8 @@ melted_obj %>%
 # then look for the Family distribution on each keys
 # for each of the male samples
 melted_obj %>%
-  filter(host_subject_id %in% c("M2","M3","M9")) %>%
-  filter(Phylum %in% c ("Actinobacteria")) %>%
+  filter(host_subject_id %in% c("M2", "M3", "M9")) %>%
+  filter(Phylum %in% c("Actinobacteria")) %>%
   ggplot(aes(x = Family,
              y = Abundance,
              color = sample_source,
@@ -343,7 +343,7 @@ melted_obj %>%
 # Further look for Genus distribution in 3 male samples
 # on each of the keys examed
 melted_obj %>%
-  filter(host_subject_id %in% c("M2","M3","M9")) %>%
+  filter(host_subject_id %in% c("M2", "M3", "M9")) %>%
   filter(Family == "Propionibacteriaceae") %>%
   ggplot(aes(x = Genus,
              y = Abundance,
@@ -361,20 +361,21 @@ melted_obj %>%
 # use subset data to generate a selected dataset
 # for the alpha diversity check
 # create a subset for only Genus Propionibacterium
-subset1_Genus <- subset_taxa(phyloseq_obj, Genus == "Propionibacterium")
+subset_genus <- subset_taxa(phyloseq_obj, Genus == "Propionibacterium")
 
 ```
 
 ```{r, subset-Male}
 # use subset data to generate a selected dataset
 # for the alpha diversity check
-# make another subset that only contains information 
+# make another subset that only contains information
 # of Genus Propionibacterium for M2,3,9
-subset2_male <- subset_samples(subset1_Genus, host_subject_id %in% c("M2","M3","M9"))
+subset2_male <- subset_samples(subset_genus,
+                               host_subject_id %in% c("M2", "M3", "M9"))
 ```
 
 ```{r, jitterplot-sample-diversity}
-# Use created subset data to plot for the 
+# Use created subset data to plot for the
 # alpha diversity metirc on different keys
 plot_richness(subset2_male,
               x = "sample_type",
@@ -385,7 +386,6 @@ plot_richness(subset2_male,
   facet_grid(host_subject_id ~.) +
   theme_bw() +
   ggtitle("Alpha diversity of Genus Propionibacterium on M2, M3, M9 samples")
-
 ```
 
 **Figure5**: The male sample alpha diversity of sequences identified in Genus Propionibacterium. This figure presents the alpha diveristy on sample from M2, M3, and M9, which are all male individuals. The alpha diverity id measured for the sequences identified as Genus Propionibacterium. The samples are from both fingertip and the keyboard of the individual. The M2 has a higher diversity in this geneus. And the fingertip in M2 has higher diversity than its keyboard. For M3 and M9, they have lower diveristy in the samples compare to M2. Also, for both M3 and M9, the fingertip and keyboards has a very simmliar diversities. 
