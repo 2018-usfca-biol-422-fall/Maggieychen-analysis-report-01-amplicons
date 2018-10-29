@@ -321,7 +321,8 @@ melted_obj %>%
   facet_grid(host_subject_id ~.) +
   theme(axis.text.x = element_text(angle = 90,
                                     hjust = 1)) +
-  ggtitle("Abundance of Families found on Different Keys for M2, M3, M9")
+  ggtitle("Abundance of Families found on Different Keys
+          for M2, M3, M9")
 ```
 **Figure3**: Abundance of Families within phylum Actinobacteria on M2, M3, M9 individuals, seperate by individuals, and colored by sample source. The sample source include each of the keys on the keyboard and individual fingertip samples. Propionibacteriaceae family has a significant higher abundance in all individual samlple across all keys and fingertips. For M3 and M9, fingertip is the location that has most of Propionibacteriaceae found. For M2, all keys and fingertip has relatie lower abundace than M3 and M9. All three individuals have different distuributions of Propionibacteriaceae on keys. 
 
@@ -341,7 +342,7 @@ melted_obj %>%
     facet_grid(host_subject_id ~.) +
   theme(axis.text.x = element_text(angle = 90,
                                     hjust = 1)) +
-  ggtitle("Genus abundance in Propionibacteriaceae
+  ggtitle("Abundance of Genus in Propionibacteriaceae
           family on M2, M3, M9")
 ```
 **Figure4**: Genus abundance in Propionibacteriaceae family on M2, M3, M9. For all three male individuals M2, M3, M9, the most common Genus identified on both their keyboards and fingertip is Propionibacterium. For individual M3 and M9, the most adundance on found on Fingertip. For each of the individual, there is a different distrubution of amount of Genus Propionibacterium found on each of the keys.
@@ -374,7 +375,7 @@ plot_richness(subset2_male,
   geom_jitter(width = 0.2) +
   facet_grid(host_subject_id ~.) +
   theme_bw() +
-  ggtitle("Alpha diversity of Genus Propionibacterium on M2, M3, M9 samples")
+  ggtitle("Alpha Diversity of Genus Propionibacterium on M2, M3, M9 Samples")
 ```
 
 **Figure5**: The male sample alpha diversity of sequences identified as Genus Propionibacterium, colored by sample source. This figure presents the alpha diveristy on sample from M2, M3, and M9, which are all male individuals. The alpha diverity id measured for the sequences identified as Genus Propionibacterium. The samples are from both fingertip and the keyboard of the individual. The M2 has a higher diversity in this geneus. And the fingertip in M2 has higher diversity than its keyboard. For M3 and M9, they have lower diveristy in the samples compare to M2. Also, for both M3 and M9, the fingertip and keyboards has a very simmliar diversities. 
