@@ -267,21 +267,6 @@ phyloseq_obj <- phyloseq(otu_table(sequence_table_nochim,
                          phy_tree(tree_in)) # phylogeny from sequence variants
 ```
 
-```{r example-phyloseq-plot-1}
-# alpha diversity metrics
-plot_richness(phyloseq_obj,
-              x = "sample_type",
-              measures = c("Shannon", "Simpson"),
-              color = "Sex") +
-  xlab("Sample origin") +
-  geom_jitter(width = 0.2) +
-  theme_bw()
-```
-
-**Figure 1**: Alpha diversity measures of the two sample types, colored by gender.
-
-
-**Figure 2**: Inferred phylogeny of sequences, with points on tips representing samples within which each particular taxa occurred. Tree represents phylogeny inferred using FastTree.
 
 
 ```{r, combine_tables}
@@ -298,12 +283,13 @@ melted_obj <- psmelt(phyloseq_obj)
              y = Abundance,
              fill = Phylum, color = Phylum)) +
   geom_col(position = position_dodge()) +
-  facet_grid(sample_type ~.)
+  facet_grid(sample_type ~.) +
+  ggtitle("Abundance of Phylums Found on Individuals")
 ```
-**Figure1**: What are the Phylum identified from each individuals samples. Including bother skin as the fingertip and surface as the keyboard. As the Figure presented, for the keyboard samples for all the individuals, the most commonly found Phylum across all the indivudals is Actinobacteria, present in organge color. The second commnoly found bacteria Phylum is Firmicutes. This finding is consistant with fingertip samples, however, there are individuals does not has fingertip sample. Including F1 who is a female individual; for L1, L3, R1, U1, U2, U3 the sex of the individual is not applictable.
+**Figure1**: Abundace of taxas found on each indivual and their keyboard samples, colored by Phylums. Seperate by sample types, skin as the fingertip and surface as the keyboard. As the Figure presents, the most commonly found Phylum across all the indivudals' keyboard samples is Actinobacteria, present in organge color. The second commnoly found bacteria Phylum is Firmicutes. This is consistant with fingertip samples, however, fingertip samples are only avaliable for M2, M3, M9 individals, who are all males. Other individuals does not have fingertip sample avaliable, including F1 who is a female individual; for L1, L3, R1, U1, U2, U3 the sex of the individual is not applictable.
 
 
-```{r, Actinobacteria_key_identification-barplot}
+```{r, Actinobacteria-Firmicutes_key_identification-barplot}
 # Filter the most commonly found species, Actinobacteria and Firmicutes
 # and examine the sample source of where Actinobacteria and Firmicutes was found
 melted_obj %>%
@@ -313,9 +299,10 @@ melted_obj %>%
              fill = sample_source,
              color = sample_source)) +
   geom_col(position = position_dodge()) +
-  facet_grid(Phylum ~.)
+  facet_grid(Phylum ~.) +
+  ggtitle("Abundance of Actinobacteria and Firmicutes Found on Keys")
 ```
-**Figure2**: For the most two commly found bacteria phylum across all the individual samples: Actinobacteria, Firmicutes. What how frequently these two bacteria are found on each keys and fingertip is illustrated. As an result, only male individuals M2, M3, M9 has all keys sampled. For other individuals, only space bar is sampled. 
+**Figure2**: Abundace of two most commnoly found bacteria phylums on each individuals, seperated by Phlums Actinobacteria and Firmicutes, colored by sample source. The sample source include each of the keys on the keyboard and individual fingertip samples. As an result, only male individuals M2, M3, M9 has all keys sampled. For other individuals, only space bar is sampled. The highest amount of Actinobacteria is found on figertip.
 
 
 
@@ -333,9 +320,10 @@ melted_obj %>%
     geom_col(position = position_dodge()) +
   facet_grid(host_subject_id ~.) +
   theme(axis.text.x = element_text(angle = 90,
-                                    hjust = 1))
+                                    hjust = 1)) +
+  ggtitle("Abundance of Families found on Different Keys for M2, M3, M9")
 ```
-
+**Figure3**: Abundance of Families within phylum Actinobacteria on M2, M3, M9 individuals, seperate by individuals, and colored by sample source. The sample source include each of the keys on the keyboard and individual fingertip samples. Propionibacteriaceae family has a significant higher abundance in all individual samlple across all keys and fingertips. For M3 and M9, fingertip is the location that has most of Propionibacteriaceae found. For M2, all keys and fingertip has relatie lower abundace than M3 and M9. All three individuals have different distuributions of Propionibacteriaceae on keys. 
 
 
 ```{r, Genus-in-Propionibacteriaceae_Family-barplot}
@@ -353,7 +341,8 @@ melted_obj %>%
     facet_grid(host_subject_id ~.) +
   theme(axis.text.x = element_text(angle = 90,
                                     hjust = 1)) +
-  ggtitle("Genus abundance in Propionibacteriaceae family on M2, M3, M9")
+  ggtitle("Genus abundance in Propionibacteriaceae
+          family on M2, M3, M9")
 ```
 **Figure4**: Genus abundance in Propionibacteriaceae family on M2, M3, M9. For all three male individuals M2, M3, M9, the most common Genus identified on both their keyboards and fingertip is Propionibacterium. For individual M3 and M9, the most adundance on found on Fingertip. For each of the individual, there is a different distrubution of amount of Genus Propionibacterium found on each of the keys.
 
@@ -388,7 +377,7 @@ plot_richness(subset2_male,
   ggtitle("Alpha diversity of Genus Propionibacterium on M2, M3, M9 samples")
 ```
 
-**Figure5**: The male sample alpha diversity of sequences identified in Genus Propionibacterium. This figure presents the alpha diveristy on sample from M2, M3, and M9, which are all male individuals. The alpha diverity id measured for the sequences identified as Genus Propionibacterium. The samples are from both fingertip and the keyboard of the individual. The M2 has a higher diversity in this geneus. And the fingertip in M2 has higher diversity than its keyboard. For M3 and M9, they have lower diveristy in the samples compare to M2. Also, for both M3 and M9, the fingertip and keyboards has a very simmliar diversities. 
+**Figure5**: The male sample alpha diversity of sequences identified as Genus Propionibacterium, colored by sample source. This figure presents the alpha diveristy on sample from M2, M3, and M9, which are all male individuals. The alpha diverity id measured for the sequences identified as Genus Propionibacterium. The samples are from both fingertip and the keyboard of the individual. The M2 has a higher diversity in this geneus. And the fingertip in M2 has higher diversity than its keyboard. For M3 and M9, they have lower diveristy in the samples compare to M2. Also, for both M3 and M9, the fingertip and keyboards has a very simmliar diversities. 
 
 
 
