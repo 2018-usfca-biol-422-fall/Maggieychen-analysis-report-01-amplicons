@@ -1,5 +1,5 @@
 ---
-title: "Analysis Report 1: Your Title Here"
+title: "Analysis Report 1: Forensic Identification using single taxa distribution of skin bacterial communities "
 author: "Maggie Chen"
 date: "October 20, 2017"
 output: github_document
@@ -12,7 +12,13 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 # Introduction
-Bacteria commnity also know as the microbial community has been constatntly interacting with human commnities, also impact human health. 
+Bacteria community constantly interacts with human communities, and it has both positive and negative impact on humans. for instance: benifits and contrast. skin disease. 
+However, human skin is also good carrier of bacteria, and transfer them onto surfaces through touching. Also, individal's living environment and life style imapcts the bacteria community on each person, which creates a significan variations between individals (CITE). What's more, skin bacteria communities are relative stable over times (CITE8). In addition, bacteria is capable to persist on the touched surface for certain amout of time, even in spite of temperature and storage conditions(CITE). Along with the fast development of sequencing techniques, the sequence and investigation on microbial communities has expanded extensively. For example, (Sequencning technology, DADA) In addition to the health implication of understand bacteria, another relative new application of understanding microbe community is in the forensic examinations. The combination of the high throughput sequencing technology and the characterristics of bactieria communities on human skins and how they persist on touched surface makes it possible as a forensic identification method. Through comparing and matching the bacteria community composition, the microbal community will serve as an "fingerprint" for the individal identification during forensic incestigations (CITE).
+
+The goal for this article, is to explore additional approach of analyze mriobial community for forensic identification surposes. My primary questuion is that instead of matching multiple communities between human skin and object been touched, how single taxa analysis can help with forensic identification. My hypothesis is that in the male community, for the most abundant bactiera taxa will has unique distribution on object, in this case, the keyboards. This unique bacteria distribution will then function as an "fingerprint" for individual identification. In order investigate on this hypothesis, R prgram is used for sequence analysis.  
+ 
+Recent research has indicated that microbial community can serve as an additional evidence in forensic investigations. Using the high throughput sequencing technologies to identify unique microbial community on individuals. In addition to match the microbial community composition, which contains multiple taxa. It is possible to use the distribution and abundance of one taxa on different parts of objects as an individualized fingerprint”. This new approach will provides an indepth evidence during forensic investigation.
+
 Add about 1.5-2 pages here. Must cite at least 5 peer reviewed articles.
 
 # Methods
@@ -83,14 +89,14 @@ sample_names <- sapply(strsplit(filenames_forward_reads, "\\."), `[`, 1)
 filenames_forward_reads <- file.path(path, filenames_forward_reads)
 ```
 
-```{r check-quality-plots}
+```{r check-quality-plots, include = FALSE}
 # Plots the quality profiles of all twenty samples
 plotQualityProfile(filenames_forward_reads[1:115])
 ```
 
 We can see from the quality profiles that most reads tend to get pretty bad in quality after around 200 bases. 
 
-```{r filter-reads}
+```{r filter-reads, include = FALSE}
 # Place filtered files in filtered/ subdirectory
 # note this will fail if the directory doesn't exist
 filter_path <- file.path("output", "filtered")
@@ -113,7 +119,7 @@ filtered_output <- filterAndTrim(fwd = filenames_forward_reads,
                                  multithread = FALSE)
 ```
 
-```{r filtered-read-counts-table}
+```{r filtered-read-counts-table, include = FALSE}
 # produce nicely-formatted markdown table of read counts
 # before/after trimming
 kable(filtered_output,
@@ -121,20 +127,20 @@ kable(filtered_output,
                     "Reads Out"))
 ```
 
-```{r learn-errors}
+```{r learn-errors, include = FALSE}
 # this build error models from each of the samples
 errors_forward_reads <- learnErrors(filtered_reads_path,
                                     multithread = FALSE)
 ```
 
-```{r visualize-errors-with-plots}
+```{r visualize-errors-with-plots,include = FALSE}
 # quick check to see if error models match data
 # (black lines match black points) and are generally decresing left to right
 plotErrors(errors_forward_reads,
            nominalQ = TRUE)
 ```
 
-```{r dereplicate-sequences}
+```{r dereplicate-sequences, include = FALSE}
 # get rid of any duplicated sequences
 dereplicated_forward_reads <- derepFastq(filtered_reads_path,
                                          verbose = TRUE)
@@ -143,7 +149,7 @@ dereplicated_forward_reads <- derepFastq(filtered_reads_path,
 names(dereplicated_forward_reads) <- sample_names
 ```
 
-```{r run-dada}
+```{r run-dada, include = FALSE}
 # parameters adjusted based on recommendations for 454 data here:
 # https://benjjneb.github.io/dada2/
 #     faq.html#can-i-use-dada2-with-my-454-or-ion-torrent-data
@@ -156,21 +162,21 @@ dada_forward_reads <- dada(dereplicated_forward_reads,
 dada_forward_reads
 ```
 
-```{r make-sequence-table}
+```{r make-sequence-table, include = FALSE}
 # produce the 'site by species matrix'
 sequence_table <- makeSequenceTable(dada_forward_reads)
 ```
 
 The output table has `r nrow(sequence_table)` rows (samples) and `r ncol(sequence_table)` columns (sequence variants). Notice how we can embed R code directly in our markdown text.
 
-```{r histogram-of-sequence-lengths}
+```{r histogram-of-sequence-lengths, include = FALSE}
 # Quick check to look at distribution of trimmed and denoised sequences
 hist(nchar(getSequences(sequence_table)),
      main = "Histogram of final sequence variant lengths",
      xlab = "Sequence length in bp")
 ```
 
-```{r remove-chimeras}
+```{r remove-chimeras, include = FALSE}
 # Check for and remove chimeras
 sequence_table_nochim <- removeBimeraDenovo(sequence_table,
                                             method = "consensus",
@@ -184,7 +190,7 @@ non_chimeric_reads <- round(sum(sequence_table_nochim) / sum(sequence_table),
 
 After removing chimeras, we were left with `r non_chimeric_reads`% of our cleaned reads.
 
-```{r table-of-pipeline-read-counts}
+```{r table-of-pipeline-read-counts, include = FALSE}
 # Build a table showing how many sequences remain at each step of the pipeline
 get_n <- function(x) sum(getUniques(x)) # make a quick function
 track <- cbind(filtered_output, # already has 2 columns
@@ -206,7 +212,7 @@ rownames(track) <- sample_names
 kable(track)
 ```
 
-```{r assign-taxonomy}
+```{r assign-taxonomy, include = FALSE}
 # assigns taxonomy to each sequence variant based on a supplied training set
 # made up of known sequences
 taxa <- assignTaxonomy(sequence_table_nochim,
@@ -289,8 +295,10 @@ melted_obj <- psmelt(phyloseq_obj)
   geom_col(position = position_dodge()) +
   facet_grid(sample_type ~.) +
   ggtitle("Abundance of Phylums Found on Individuals")
+
 ```
-**Figure1**: Abundace of taxas found on each indivual and their keyboard samples, colored by Phylums. Seperate by sample types, skin as the fingertip and surface as the keyboard. As the Figure presents, the most commonly found Phylum across all the indivudals' keyboard samples is Actinobacteria, present in organge color. The second commnoly found bacteria Phylum is Firmicutes. This is consistant with fingertip samples, however, fingertip samples are only avaliable for M2, M3, M9 individals, who are all males. Other individuals does not have fingertip sample avaliable, including F1 who is a female individual; for L1, L3, R1, U1, U2, U3 the sex of the individual is not applictable.
+
+**Figure1**: Abundace of taxas found on each indivual and their keyboard samples, colored by Phylums. Seperate by sample types, skin as the fingertip and surface as the keyboard. As the Figure presents, the most commonly found Phylum across all the indivudals' keyboard samples is *Actinobacteria*, present in organge color. The second commnoly found bacteria Phylum is *Firmicutes*. This is consistant with fingertip samples, however, fingertip samples are only avaliable for M2, M3, M9 individals, who are all males. Other individuals does not have fingertip sample avaliable, including F1 who is a female individual; for L1, L3, R1, U1, U2, U3 the sex of the individual is not applictable.
 
 
 ```{r, Actinobacteria-Firmicutes_key_identification-barplot}
@@ -305,7 +313,9 @@ melted_obj %>%
   geom_col(position = position_dodge()) +
   facet_grid(Phylum ~.) +
   ggtitle("Abundance of Actinobacteria and Firmicutes Found on Keys")
+
 ```
+
 **Figure2**: Abundace of two most commnoly found bacteria phylums on each individuals, seperated by Phlums Actinobacteria and Firmicutes, colored by sample source. The sample source include each of the keys on the keyboard and individual fingertip samples. As an result, only male individuals M2, M3, M9 has all keys sampled. For other individuals, only space bar is sampled. The highest amount of Actinobacteria is found on figertip.
 
 
@@ -327,6 +337,7 @@ melted_obj %>%
                                     hjust = 1)) +
   ggtitle("Abundance of Families found on Different Keys
           for M2, M3, M9")
+
 ```
 
 **Figure3**: Abundance of Families within phylum Actinobacteria on M2, M3, M9 individuals, seperate by individuals, and colored by sample source. The sample source include each of the keys on the keyboard and individual fingertip samples. Propionibacteriaceae family has a significant higher abundance in all individual samlple across all keys and fingertips. For M3 and M9, fingertip is the location that has most of Propionibacteriaceae found. For M2, all keys and fingertip has relatie lower abundace than M3 and M9. All three individuals have different distuributions of Propionibacteriaceae on keys. 
@@ -349,6 +360,7 @@ melted_obj %>%
                                     hjust = 1)) +
   ggtitle("Abundance of Genus in Propionibacteriaceae
           family on M2, M3, M9")
+
 ```
 
 **Figure4**: Genus abundance in Propionibacteriaceae family on M2, M3, M9. For all three male individuals M2, M3, M9, the most common Genus identified on both their keyboards and fingertip is Propionibacterium. For individual M3 and M9, the most adundance on found on Fingertip. For each of the individual, there is a different distrubution of amount of Genus Propionibacterium found on each of the keys.
